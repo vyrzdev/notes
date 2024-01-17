@@ -1,0 +1,18 @@
+Lab 1
+===================
+
+Task 1: Relational Schema
+---------------------------
+
+Entities:
+	Owner: name, contact details (email (PK))
+	Dog: name (PK), mother (FK:Dog), father (FK:Dog), owner (FK:Owner, NotNull), Breed (FK:Breed, NotNull), Kennel (FK:Kennel, NotNull)
+	Breed: name (PK), associated info...
+	Kennel: name (PK), address, phone number
+	Show: (name+opening) (PK), closing
+	Attendance: (Dog (FK), (show name+opening) (FK)) (PK, hence NotNull), place/rank
+
+
+
+Owner:
+	

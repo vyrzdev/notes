@@ -1,0 +1,23 @@
+How the Internet is Changing
+=============================
+
+Original design of internet made assumptions:
+	Devices located in a fixed location (IP is almost permanent)
+	The network and services are all decentralised (not fully true these days)
+	Best Effort Service is enough for general use.
+	Network can be trusted. (VERY NOT TRUE ANYMORE)
+	Innovation can happen at fringe, network should not concern itself. (Reaching limitations, see MTU)
+
+How has this changed?
+-----------------------
+Trust: Needs have changed, network is open, hence less trustworthy than past, when was closed (DARPANET)
+Innovation: Cloud Compute + Giant Companies results in innovation occuring from the middle outwards.
+Addressing: More devices, More machines, need more addresses. IPv4 -> v6, but slow adoption. 
+	    See NAT as sticking plaster					  Global: 40-45%
+									  France: 75%, UK: 45% Fuck you frenchies
+Reliability: Increased use of real-time services, requires higher guarantees about speed and reliability. i.e. video conference.
+Centralisation: Increased centralization, resulting in legal, moral, social consequences. Also has SECURITY costs. 
+		Shift from edge based networks to HUB & Spoke topology. See EDWARD SNOWDEN (maybe mention in exams)
+
+
+

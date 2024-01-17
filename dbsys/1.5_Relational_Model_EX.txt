@@ -1,0 +1,47 @@
+A1: Relational Model, Company
+================================
+
+A company is organized into departments. Each department has a unique
+        number, and a particular employee who manages the department.
+
+	We keep track of the start date that employee began managing the
+        department.
+
+A department may have several locations.
+
+A department controls a number of projects, each of which has a unique name,
+	number and a single location.
+
+The company stores the information about the employee (e.g., name, salary,
+	birth date, …), and the unique social security number. An employee is assigned
+	only to one department, but may work on several projects, which are not
+	necessarily controlled by the same department.
+
+We keep track of the current number of hours per week that an employee
+	works on each project and their direct supervisor, who is another employee.
+
+The company keeps track of the dependent (e.g., child) of each employee for
+	insurance purposes and the corresponding relationship with the employee (e.g.,
+	son, daughter).
+
+Immediately can start building entities, but this is not a science. 
+Important to formalise in order to find the provably best form for the DB.
+
+Entities: Departments, Employees, Projects, Dependent
+Relationships:
+	Employee manages dept.
+	Dept may have 1+ locations
+	Dept controls N projects
+	Employee assigned to 1 dept.
+	Employee MAY work on N Projects, controlled by various depts
+	Employee supervised by Supervisor (who is employee)
+	Employee has N dependents, each with a specific relationship to employee.
+
+Employee: NAME, SSN (PK), ..., SUPERVISORSSN (FK: Employee), DNO (FK: Department), ...
+Department: NAME, DNO (PK), MGRSSN (FK: Employee), MGRSTARTDATE, ...
+Location: NAME, DNO (FK: Department), LNO (PK) (some kind of location ID)
+Project: NAME, PNO (PK), PLOCATION?, DNO (FK: Department), ...
+Works On (Join table): ESSN (FK: Employee), PNO (FK: Project), Hours
+Dependent: ESSN (FK: Employee), Dependent Name (PK?), ...
+
+

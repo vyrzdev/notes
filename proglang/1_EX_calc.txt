@@ -1,0 +1,69 @@
+Lecture 1, Syntax, Calc example:
+===================================
+
+Calc is simple calculator lang.
+
+Vars in {'a', ..., 'z'};
+Expressions consist of variables, numerals, and arith. ops.
+Assignment/Output commands.
+
+e.g.
+ 	set x = 13
+	set y = x*(x+1)
+	put x
+	put y/2
+
+Formally:
+	For calc, syntax of identifiers given by:
+	
+	S = {'a', ..., 'z'}
+	tfr: RE = 'a' | ... | ... | 'z'
+
+	Syntax of numerals given by:
+	S = {0,1,2,3, ..., 9}
+	tfr: RE = (0 | 1 | ... | 9)+ => (0|...|9)(0|...|9)*
+
+Now syntax defined, must define grammar (BNF // EBNF)
+
+Terminal Symbols: 'put', 'set', '=', '+', '-', '*', '/', '(', ')',
+		  '\n', 'a', ..., 'z', '0', ..., '9'
+
+Non-Terminal Symbols: 
+prog, com, expr, prim, num, id, EOF(end of file), EOL (end of line)
+
+Sentence Symbol: prog
+
+prog = EOF | com prog :: Recursive, a prog is either EOF, or a com + another prog.
+		         i.e. com com com EOF is valid prog.
+
+com = 'put' expr EOL | 'set' id '=' expr EOL :: Command is put or set, define syntax.
+
+expr = prim | expr '+' prim :: Recursive, expressions can be prim, or expression
+       | expr '-' prim      :: with operator followed by prim. (first order expr)
+       | and so on for *, / 
+
+prim = num, id, '(' expr ')' :: Primitives can be numbers, ids, or expr (1st order expr)
+num = digit | num digit :: Recursive, num is 1+ digits.
+id = letter :: Only one char vars allowed.
+letter = 'a'|...|'z' :: Regex, see defined syntaxes.
+digit = '0'|...|'9' :: ditto.
+eol = '\n'
+
+Now show syntax tree:
+     
+ +----expr------+
+expr    |       prim---------------+
+prim    |       | expr---+---+     |
+id      |       | expr   |   prim  |
+ |      |       | prim   |   id    |
+ |	|       | num    |   |     |
+ x      *       ( 22     -   y     )
+
+
+
+
+--------------------------------------------------------------------------------
+
+Consider ident consists of 1+ upper case letters/digits, starting with a letter.
+RE = (A|B|...|Z)(A|B|...|Z|0|1|...|9)*
+

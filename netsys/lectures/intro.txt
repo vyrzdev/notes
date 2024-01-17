@@ -1,0 +1,35 @@
+Networked Systems - Intro Lecture
+====================================+
+
+DR Colin Perkins: csperkins.org - colin.perkins@glasgow.ac.uk
+Materials on Moodle &&& WEBSITE/teaching, website has transcripts.
+
+Each Thursday will have Lab in early afternoon followed by Discussion/lecture in evening. (NOT RECORDED)
+Lectures are actually pre-recorded videos.
+
+Due Dates:
+AE Released: 8th Febuary
+Due: 22nd Febuary @ 4:30pm
+
+Exam:
+	3 Questions.
+	80% of course.
+	Best marks for:
+		reasoned arguments to logical conclusion
+		evidence of wide, relevant reading
+		application of learning to new situations/problem solve.
+	No code written in exam
+	Readings are examinable
+	Papers from 2020+ most representative of what to expect.
+
+Readings:
+	One of the following:
+		Computer Networks, a systems approach
+		Computer Networking, Principles, Protocols & Practice
+		Computer Networking, a top down approach
+		Computer Networks
+
+	Also expected to read some content referenced in lectures.
+	(RFCs, Blog Posts, etc)
+
+

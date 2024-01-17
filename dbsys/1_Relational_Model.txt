@@ -1,0 +1,84 @@
+The Relational Model
+=====================
+SQL invented 1970, 1974 finished, 1990 agreed to stdize, 1992 stdized
+
+Contextual Database
+------------------------
+Observation: Human activity is data driven, choices by reasoning through observed data.
+	     We are limited, we cannot store and recall all data.
+
+Idea: Design a robust base system, which can store, update, delete, recall/search
+      large data efficiently.
+
+
+Data Management System (Has fundamental properties)
+---------------------------------------------------
+Model Data: (Relationships, Object Orientation, Logic, Description, Fuzzy Logic?)
+Access Data: Query/Insert/Delete/Update (CRUD)
+Analyse Data: Complex Aggregations, Function Approximation?, Histograms?, Visualisation
+Store Data (physically): Memory/HDDs
+Secure Data: Control access & encode/cipher confidential data.
+
+A database system MUST:
+	Maintain data consistency in event of failures (power cuts etc), and recover.
+	Optimise data access, in order to efficiently query. (index/hashing, optimization)
+
+A database system can be treated as a black box, with an interface for users/apps 
+offering Data Modelling, as well as some form of Declarative Query Language.
+						 ^^^^ (What to do, not how)
+
+
+Data (Kinds & Definitions)
+----------------------------
+Structured: Well defined structure, i.e. tables.
+Unstructured: Less info provided to interpret, more freeform (HTML, Sensor Meausrements)
+Semi-Structured: Self descriptive data, i.e. JSON/XML
+
+Conceptual Data Modelling
+--------------------------
+Transform a text decription of real problem into set of CONCEPTS conveying EXACT SAME info.
+Approaches:
+	Entity Relationship Modelling: P Chen, does not guarantee optimal queries/ops
+	Relational Modelling: E Codd, math driven, relational algebra/set theory.
+			      Provides optimality guarantees through rigourous mathematics.
+
+CONCEPTUAL DATA MODEL: A math model for interpreting data.
+Must understand context: define entities, attributes, relationships.
+
+
+Relational Model
+--------------------
+RELATIONAL CONCEPTUAL MODEL: INFORMAL, entities may relate with each other based on common
+				       attributes
+
+Formally, any entity and any relationship can be modelled as a relation.
+The relations are represented within a 2d table. 
+The table contains: an ordered set of attrs (columns)
+		    a set of rows (instances)
+There exists a SPECIFIC attr, that UNIQUELY identifies a row, i.e. UUID. (PK)
+
+Query: attrs to retrieve, and constrained attrs to filter out irrelevant entities.
+
+FORMALIZATION:
+	Schema of relation: R(A_1, A_2, ..., A_n)
+	Each attr A_x assumes values in domain D_x, hence A_x E D_x
+	
+	i.e. for BankAcc, acc_num in N = {1,2,3...}
+	                  name in VarChar(n) = char strings of max len n
+			  balance in R = Real numbers
+			  status in {'active', 'inactive'}; Finite domain/enum!
+		= R(acc_num, name, balance, status)
+	
+	A tuple t of R is ORDERED SET of values corresponding to attrs of R,
+						while SATISFYING constraints.
+	
+	e.g. t = (1, "Benjamin", 1200, 'active'), t[acc_num] = 1
+	
+	Instance r(R) is a SET of tuples. Hence r(R) = {t_1, t_2, ..., t_n); t_n tuple of R
+
+	NULL represents unknown, missing, inapplicable (i.e. is NaN, N/A, None, Undefined)
+
+	Relational DB Schema, is a set of relations:
+	S = {R_1, R_2, ..., R_n) union NULL
+
+

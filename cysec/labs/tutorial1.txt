@@ -1,0 +1,35 @@
+Tutorial 1:
+==============
+
+H is collision resistant, where H:{0,1}* -> {0,1}^n
+
+
+Hence, the output of H, given x in {0,1}*, will be {0,1}^n, which is within {0,1}*
+Hence, let x' = H(x), since x' = {0,1}^n which is within {0,1}*, 
+H is collision resistant for H(x'), hence H' = H(H(x)) is collsion resistant.
+
+
+
+
+
+
+
+
+H' = H(H(x))
+
+Since {0,1}^n is contained within the language {0,1}*, is valid as input to H.
+Hence since H(x) is collision resistant for x within language {0,1}*, 
+and the result of H(x) is within the language {0,1}*, H(H(x)) is collision resistant.
+
+
+
+H(x) is collision resistant, hence cannot in PT, find pair (x, x') where H(x) = H(x')
+Let pair = (x, H(x)), where x in {0,1}*
+
+Since H is collision resistant, cannot in PT find x, H(x) where H(x) == H(H(x))
+Since H is collision resistant.
+
+Assume H'(x) = H(H(x)) is collision resistant:
+hence cannot in PT find pair (x, x') where H'(x) == H'(x')
+				     eqv:  H(H(x)) == H(H(x'))
+				     

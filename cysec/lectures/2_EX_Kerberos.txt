@@ -1,0 +1,42 @@
+Kerberos Protocol
+=================
+
+Dev in MIT 1988
+Kerberos is a trusted 3rd party auth svc/ptcl
+Kerberos is a Internet Standard
+
+Entities:
+	USER wants to auth with SERVICE SERVER via a CLIENT
+	In order to achieve this, will interact with:
+	KERBEROS AUTHENTICATION SERVER (AS)
+	&& TICKET GRANTING SERVER (TGS)
+
+Client       Service          AS              TGS
+   | ------(Uid, TGT req)---->|                |
+   | 			      :: AS checks DB, recovers Hash for Uid.
+   |			      :: Responds with encryped under Hash!
+   |<--(TGS seshkey, TGT rep)-|                |
+   |			      :: TGT rep contains: session key, uID, timstamp, expiry, clientip)
+   :: Client decrypts TGS seshkey              |
+   :: using P from user to derive H(P)         |
+   :: Sends to TGS encrypted under H(P)        |
+   :: Authenticator: { Uid, clientip, timstamp}|
+   |-------(SSid, TGT rep, Authenticator)----->|
+   |					       :: TGS decrypts TGT and derives K
+   |					       :: Decripts & Derives Authenticator
+   |					       :: If IDs of TGT & Auth ==, sender is real owner.
+   |					       :: Replies with SGT: {c/SSkey, Uid, cip, expiry)
+   |					       :: Encrypted under K_ss/tgs
+   |<----(client/SS sesh key, SGT rep)---------|					       
+   :: Client decrypts and derives key and SGT.
+   :: Then can authenticate itself to SS.
+
+   CONTINUES ONWARDS BUT LOOK AT REAL SPEC: https://datatracker.ietf.org/doc/html/rfc4120
+
+Limitations:
+	AS/TGS Single Point of Failure
+	Syncronisation between clocks needed
+	Also does not defend against IDLE WORKSTATION ATTACK
+
+
+

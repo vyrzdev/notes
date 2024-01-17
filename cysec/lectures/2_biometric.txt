@@ -1,0 +1,246 @@
+Biometric Authentication
+==========================
+
+Hashing:
+
+	H: {0,1}* -> {0,1}^n for some constant n. (FIXED LENGTH FROM VARIABLE)
+	One-Way: Given hash y, a polynomial time adversary cannot find an x where H(x) = y,
+		 except by pure luck (HIGHLY UNLIKELY/NEGLIGIBLE)
+
+	Second Preimage Resistance: given x, a polynomial time adversary cannot find 
+				    x' != x such that H(x') = H(x) except by pure luck.
+				    ditto.
+
+	Collision Resistance: A polynomial time adversary cannot find a pair
+			      (x, x') where H(x) = H(x') except by pure luck. ditto.
+
+	This cascades, i.e. Collision => Second => One Way
+
+	Use Cases:
+		Message Integrity (Checksum)
+		Digital Signature (Hash -> Sign)
+		Blockchain (POW)
+		Password Validation (without storing plaintext pass on server.)
+	
+	Examples:
+		MD5 (1991): Collisions found 2004
+		SHA-1 (1995): 2017, 2020
+		SHA-2 (2001): As of yet unfound
+		SHA-3 (2012): Very Different
+		
+		SHA-{2,3} are unsuitable for pass validation (very secure tho <3)
+
+User Authentication:
+	Process of verifying an identity claimed by the user.
+
+	Two Steps: 
+		Ident: Pass identifier to system
+		Verify: Present/Generate auth info that confirms binding between entity and
+		        ident.
+
+	Methods/Means:
+		Known Info: passwords, PIN, question responses
+		Physical factor: Keycard, Smart card, YubiKey
+		Something the user is: Biometrics (fingerprint, retina, face) (unchanging)
+		Something the user DOES: voice pattern/handwriting (changing)
+	
+	Multifactor Auth:
+		User must present 2+ means to verify identity.
+		Usually involves a combination of means, i.e. physical + known. (see 2fa apps)
+		See One Time Passwords. (via SMS/AuthKey/Email)
+
+	NIST 2020, Basic Security Requirements:
+		Identify system users, processes acting on their behalf
+		Verify user/procs/devices identities, before allowing access to system
+	
+	Password Authentication:	
+		Made from Identifier + Password.
+		System compares password to stored password for user ID. (PASSWORD FILE)
+		The password auths the Ident. (verify step)
+		The ident determines authorization, privledges, access control (ident step)
+
+		Common Vulns:
+			Specific Account Attack: brute force on specific target, use context.
+			Popular Password Attack: try common pass on wide range of targets
+			Workstation Hijacking: wait for unattended login session.
+			Exploit User Mistakes: passwords written down/shared/social eng.
+			Exploit MultPass Use: Many accounts using same password. (domino effect)
+
+		Common Countermeasures:
+			Specific Acct: Lockout after many attempts
+			Workstation Hijack: Log out/lock due to inactivity
+			General: Intrusion detection, monitors behaviour for irregularity
+			MultiPass Use: Require unique passwords on diff devices.
+			General: USE STRONG PASSWORDS
+
+		Properties of Strong Passwords:
+			Sufficient Length: Hard to brute force/common pass attack
+			Complexity: Large charset (utf-8+), No personal data (social eng)
+			Frequently Changed: Passwords get leaked in breaches, can be 'stale'
+
+			See Week2 Lecture slide 12 for strength table
+
+		Password Hashing:
+			Cleartext password storage can be devastating in event of breach.
+			This is how many passwords become 'stale'
+
+			To solve this problem, passwords are typically stored as hash 
+									(salted/nonced)
+			
+			Hash algorithm is intentionally slow, as a natural defence 
+		         against bruteforce
+			
+			Common Algs: Argon2, Bcrypt, Scrypt, PBKDF2
+			
+			Salting: Pass combined with fixed length salt (typically 128 bit)
+				 (random every user, stored in DB alongside ident.)
+				
+				Prevents duplicate passwords being visible in pass file
+				i.e. bruteforce one pass and find duplicates
+
+				Increases difficulty of offline DICTIONARY attacks:	
+					Experience hackers can gain access to pass db.
+					Attacker gets file, and checks against premade
+					set of hashes, if matches found pass known.
+					
+					Becomes exponentially harder as salt len increases
+
+		Password Cracking via RAINBOW TABLES:
+			Special precomputed hash tables which need less time but more space.
+			
+			Attacker gens large dict of possible passes.
+			For each pass, attacker gens hash for every possible salt.
+			(VERY LARGE TABLE, EXPONENTIAL WITH SIZE OF SALT)
+
+			Although they offer important speedup, compared to traditional
+			dictionary attacks, can be thwarted by ++salt len, or uncommon
+			passwords
+
+		Alternative Cracking Methods:
+			Password gen using prob of chars in natural lang
+			Using large datasets of leaked passwords for development 
+			of a CONTEXT FREE GRAMMAR for password cracking.
+
+		Shadow Password File (Access Control):	
+			File where hashed passes are kept seperate from user data.
+			(similar to auth providers in large scale systems)
+			(seperation of concerns, if auth system comprimised data safe, and vv)	
+		
+			File will be restricted to a higher level of priveledge.
+
+			This approach reduces the attack surface, as only the authentication
+			service has access, and hence to access, must breach auth service.
+			Auth service is typically simple by design, relying on mathematical
+			properties rather than obfusication. If complex user logic systems
+			are breached, they cannot access the file, hence not part of attack
+			surface.
+
+		Password Selection Methods (how to build a password):
+			User education is VITAL, no use in strategy if no1 uses them.
+
+			Computer generated passwords: Poor adoption, not user friendly 
+			                              (but secure!)
+			Reactive password checking: System tries to crack own passwords 
+						    to find vulnerable passwords.
+			Proactive password checking:
+				User selects password, and system checks against rules/breach db
+				to decide whether to allow, or ask user to use diff password.
+			Password Managers:
+				Generate/Store passwords for various apps.
+				User must only use 1 single MASTER password.
+				CAN BE SINGLE FAILURE POINT! MUST USE MFA!!!!
+
+	Token Based Authentication:
+		Memory Cards:
+			Store, but do not process data.
+			i.e. old magnetic strip on bank card. stores simple code, read by term.
+
+			Usually used alongside another factor (in America a SIGNATURE :O)
+		
+		Smart Cards, i.e. NFC (INCREDIBLE TECHNOLOGY):
+			Have an embedded MICROPROCESSOR!
+			Rudimentary IO, Memory, Processor, typically super low power!
+		
+			I/O:
+				Contact: Must be inserted into reader. data transfer via contact
+					 (Chip & PIN?)
+				Contactless: Uses NFC (radio via antenna) to data transfer.
+
+			Protocol:
+				Static:
+					User auths to token, and token auths to system.
+				Dynamic Generation:
+					Token generates unique password based on SECRET!
+					This is periodic and time-based.
+					Password is entered manually/electronically over I/O
+				Challenge Response:
+					System generates challenge, token generates resp
+					based on challenge. Generally required shared secret
+					to perform crypto ops.
+
+		Electronic Identity Cards:
+			Functions:
+				ePass: Govt-Reserved Offline function for identity.
+				eID: A identity record which can be accessed with 
+				     authorisation from identity holder
+				eSign: Priv key+Cert proving digital signature for
+				       person.
+
+			eID Protocol:
+				Effectively Oauth but with a govt server, and ident
+				from card.
+
+				User  Service  EID
+				- req -> |
+				<-redir--|
+				----auth req--->|
+				<---PIN req ----|
+				----pin reply-->|
+				|<-auth hndshk->|
+				<--auth result--|
+				   (+redir)
+				-result->|
+				<-grant--|
+
+	Biometric Authentication:
+		Physical Characteristics:
+			Facial, Fingerprint, Hand Shape, Retina Pattern, Iris
+			Signature, Voice -- CHANGES UNRELIABLE!
+		
+		Cost vs Accuracy:
+			Accuracy does not apply to other methods.
+			System must determine matches within a range of confidence.
+			
+			Quantified by False Match Rate, False Non-Match Rate
+			Intrinsically linked by decision threshold.
+			A tradeoff between security requirements and convenience.
+
+			See Lec2 User Auth slide 28 for nice diagram
+
+	Remote User Authentication:
+		Due to remote, vulnerable to MITM.
+		Typically solved with challeng-response.
+
+		Example Protocol:
+
+		User                   Host
+		U: Ident -----(U)----> r: random challenge
+		                       f(...): hiding function
+				       w_U: stored auth info for U.
+			 <--(r, f())--
+		w*: witness
+		         --(f(r, w*))-> Accept if:
+			 		Verify(f(r,w*), r, w_U) = true.
+	
+	See 2_EX_Kerberos.txt for Kerberos Protocol
+
+
+		User send ident.
+		Host replies with random challenge, and a 'hiding function'
+
+		
+		
+
+
+
+			

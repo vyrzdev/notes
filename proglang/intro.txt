@@ -1,0 +1,33 @@
+Programming Languages
+======================
+
+First 4 weeks, labs are tutorials.
+From week 5, they are practical, extemding FUN Compiler.
+
+A PL should be UNIVERSAL (turing complete)
+Lambda Calculus: Lang of recursive funcs, is universal (TURING COMPLETE?)
+A PL should be NATURAL for expressing tasks in its domain.
+A PL should be IMPLEMENTABLE, all programs written in a PL should be runnable (inf mem)
+A PL should be REASONABLY EFFICIENT. Generally should meet constraints of domain.
+
+
+Syntax: The form of the program. Expressions, Commands, Declarations.
+Semantics: The meaning of the program, how will it behave on a machine.
+
+Design Concepts make up PLS:
+	Values, Types
+	Variables, Storage
+	Bindings, Scope
+	Procedural Abstraction
+	Data Abstraction
+	Generic Abstraction
+	Process/Comms (NOT COVERED)
+
+A paradigm is a style, defined by what concepts are included.
+	Functional Programming: Values, Expressions, Functions
+	Imperative: Variables, Commands, Procedures
+	Obj Orient: Objects, Methods, Classes
+	Concurrent: Procs & Comms
+
+A PL must be compiled/interpreted.
+

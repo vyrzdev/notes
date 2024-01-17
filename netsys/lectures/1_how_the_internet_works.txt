@@ -1,0 +1,127 @@
+How the Internet Works
+========================
+
+Protocols & Layers :: Good way to think, not super applicable.
+-------------------
+Physical: Cable/Modulation Scheme/Radio Freq - The physical transport upon which data is transmitted.
+Data-Link: Eth/Wifi/ADSL - Connection Negotiation, Identity, Message format etc. e.g. 802.1.1.x
+	   Handles communication between device and the next closest on the network. I.e. base stn.
+           Hop-By-Hop, only 2 devices.
+Network: Handles communication between many devices, crossing many data-links. Makes these seperate
+	 links appear as if they are a single network. Handles tracking identity of devices, BUT NOT ROUTING/TRANSMISSION
+
+Transport: Handles transport of data across a network between disparate entities. Handles routing.
+
+Session Layer: Part of transport (sort of, see QUIC) - Handles app level communication, i.e. HTTP, FTP, SSH, etc.
+
+Who develops this?
+--------------------
+IETF: Internet Engineering Task Force - IP/TCP/etc
+W3C: Web Consortium - HTML/HTTP (superceded by IETF)
+3GPP: 3rd Gen Partnership Program - Mobile data protocols etc.
+ITU: Int Telecoms Union - Radio Stds
+
+Layers of Governance? :: See IGF/ICANN/Internet Society
+--------------------
+Social Layer: Rights, Norms, Laws (Govt)
+Content Layer: Intellectual Property, Spam (...?)
+Logical Layer: Naming, Numbering, Standards/Protocols, etc. (IETF/W3C)
+Infrastructure Layer: Access to the internet, Availability of Services. (ISPs)
+
+Physical Layer
+--------------------
+Baseband: Used for direct connection, i.e. eth. See Manchester/NRZ Encoding
+Modulated: Used for radio communication, i.e. wlan.
+	Shannon's Theorem :: C = B * log2(1+ S/N)
+	---------------------------------------------
+	Shannon's Theorem gives an upper bound to the capacity of a link, in bits per second (bps),
+	as a function of the available bandwidth and the signal-to-noise ratio of the link.
+	where C is the achievable channel capacity, B is the bandwidth of the line, 
+	S is the average signal power and N is the average noise power.	
+
+Data-Link Layer
+---------------------
+
+Eth:    8 byte    6 byte 6 byte 2b  ? bytes      4+ byte
+	preamble  source dest   len data         ECC
+	<--------><-----><-----><--><-----------><----->
+	(known)   <----------------> 
+          	  14 byte header
+Preamble enables syncronization of clock signals. Alternates 1/0
+Made up of 7 bytes and 1 SFD (ending in 1 to break preamble pattern)
+			 (start frame delimeter)
+
+CSMACD :: Helps prevent collision, etc.
+	Carrier Sense - Listen before sending, if sum1 else sending, wait. (randomized but increases with collisions)
+	Multiple Access - Many clients on network at once.
+	Collision Detection - If sum1 sends while sending, stop and wait (randomized ditto.)
+
+Network Layer
+--------------------
+IP
+	TTL: # hops OR some time heuristic
+	Best effort delivery, failure is thrown out, data lost.
+	No guarantees, as a feature, works over variable quality links, TCP handles delivery.
+	No Quality of Service (DSCP can do QOS in theory, specifying needs, but often ignored or EVEN SET TO 0)
+IPV6
+	More addresses (128 bits not 32)
+	Hop Limit not TTL (nobody used time heuristic)
+	No Fragmentation, in IPv4 was present to allow packets to be fragmented mid-journey
+			  by routers, depending on MTU of next hop. In IPv6 is done end-to-end.
+	DSCP still present?
+
+Packets, not Packages (Messages are sent in pieces not all at once.)
+Entrappening networking??
+InterDomain Networking??
+
+Transport Layer
+---------------------
+
+UDP: ____ Datagram Protocol
+	   
+	Consists of: Port #, and Length field (redundant)
+				 as already included in IP
+				 but pointless as UDP
+				 packets are insular.
+
+	Is not reliable, no delivery guarantee, no ordering guarantee, no uniqueness guarantee.
+	Left to protocol above in stack.
+
+TCP: Transmission Control Protocol
+
+	Consists of:  ...
+
+	Is reliable, provides delivery, ordering, uniqueness guarantees.
+	If packets are lost, will be retransmitted. If packets are duplicated, will be detected. If out of order, will reorder.
+	Downside is, slower sometimes, higher latency. Not ideal for gaming/video/realtime communications.
+	Reciever sends back ACK packets.
+
+	TCP Handshake:
+		SYN ->
+		    <- SYN + ACK
+		ACK ->
+		ESTABLISHED
+		
+		----- SECURITY ----- TLS (Transport Layer Security)
+		Keys/Auth handshake.
+
+		----- DATA -----
+		FIN ->
+		    <- FIN + ACK
+		ACK -> 
+
+	QUIC bypasses two seperate handshakes, established security as guarantee during initial handshake.
+	When TCP recieves 3 duplicate ACKS, sender will resend? TODO
+
+Session Layer
+-------------------------
+Handles structure of comms, i.e. P2P/Client Server/Federated System (Torrent with peers and trackers)
+
+Missing Layers (Political/Financial)
+--------------------------------------
+Important to think about COST and POLITICS of designed protocols.
+In order to design a protocol and have it adopted, must agree on format.
+This effort is extremely political. See QUIC, IPv6. See older formats that have died 
+	i.e. IPX/SPX, IP alternatives that failed to achieve market share.
+
+

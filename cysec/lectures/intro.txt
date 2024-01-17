@@ -1,0 +1,200 @@
+Intro to CSF
+==============
+
+Types of Attacks:
+	DOS: Denial of Service
+	DNS:
+		DNS Amplification: Use public DNS servers to flood a target system
+		   with dns replies.
+		Cache Poisoning: Inject malicious data into DNS server cache to 
+		   cause redirect to malicious site.
+		DNS Tunneling: Exfiltrate data within DNS packets.
+	Software Vulnerabilities:
+		OS Command Injection: Allows arbitrary execution of OS commands on host.
+		SQL Injection: Allows arbitrary queries to be run on host SQL server, 
+			i.e. drop.
+		XSS: Execute malicious scripts in users browser to execute arbitrary 
+			actions.
+	Malware types:
+		Virus: Require host prog.
+		Worms: Can spread throughout a Network standalone 
+		Trojan: a legitimate looking tool that tricks users
+		Rootkit: provides root access without revealing itself
+	Social Engineering:
+		Weak/Old Password/Interception
+
+		Phishing attacks: Pretend to be trusted entity and decieve user
+			into giving up data/completing an action.
+
+Protection Methods:
+	Anti-Malware tools
+	Firewalls
+	Intrusion Detection
+	Cryptography (Protecting data in transit and at rest)
+	User eductation & awareness (Prevent phishing attacks)
+
+Key aims of Cysec:
+	Confidentiality:
+		Data Confidentiality: Private/Confidential data is not accessible
+			by unauthorised employees/users.
+		Data Privacy: Users control/influence what of their info can be 
+			collected and stored, as well as who it can be sent to.
+	Integrity:
+		Data Integrity: Information/Programs are only changed in an authorised
+			manner.
+		System Integrity: System performs its task unimpaired, with no unauthorised
+			access.
+	Availability:
+		Systems work promptly and do not deny service to authorised users.
+
+	Accountability:
+		True security as of yet impossible, hence must be able to trace breach.
+
+		Hence must require actions of entities to be traceable uniquely to them.
+		Aids with: Fault Isolation, Intrusion Detection, Recovery/Legal action
+
+Impact of Breaches: (pretty self-explanatory)
+	Low:
+		Organization can complete primary functions, but noticable reduction 
+		in efficiency/effectiveness, minor damage to assets, minor financial
+		losses, minor harm to users/employees.
+		
+		i.e. Faculty lists published (confidential), typically public/semi-public
+		     Anonymous poll results (integrity), known to be unreliable
+		     Online Directory down (availability), hardcopies exist
+	Medium:
+		Organisation can complete primary functions, but significant reduction
+		in efficiency. Significant damage to assets, Significant financial loss,
+		Significant harm to users/employees that DOES NOT involve loss of life
+		and/or serious injury.
+	
+		i.e. Student Enrollment (confidential), typically not public, but okay.
+		     Forum Page Defaced/Wiped (integrity), registered users/webmaster 
+		     					   may lose time/money/data.
+		     Public Webpage for Uni (availability), not critical; but will be
+		                                            embarrassing to lose.
+	High:
+		Organization cannot complete 1+ of its primary functions, major damage
+		to assets, major financial losses, severe/catastrophic harm to users,
+		which may include, but is not limited to loss of life, serious injury.
+
+		i.e. Student Grade Info (confidential), very confidential, very serious
+		     Patient Information (integrity), invalid info could lead to serious
+		                                      harm, potential death/injury, as 
+						      well as liability.
+		     Auth svc for Google (available), systems are critical and cannot
+		                                      be accessed without going through
+					              the auth svc.
+	
+Challenges of Cysec:
+	When creating security mechanism/alg, must also consider attacks on system ITSELF.
+	
+	Generally security mechanisms are complex/less obviously required. 
+		Can be hard to convince people to follow/implement.
+	
+	Security mechanisms typically require many things, not a simple magic wand, 
+		may require human actions, requiring user participation.
+	
+	Attackers have advantage, as only need to win once, whereas security must 
+		win every time.
+	
+	Security is often applied after design, instead of during the design process.
+	
+	Strong security is percieved as (and often is) an impediment to efficency and/or
+		user friendliness. 
+
+Types of attacks:
+	Passive Attacks: Attempt to access data/info from system without effecting resource
+			 i.e. Eavesdropping
+	Active Attacks: Attempt to alter/effect system resources/effect operation
+			 i.e. MITM
+
+Origin of an Attack:
+	Inside:
+		Initiated by entity within system. Is authed to access system resources
+		but uses them in an unapproved way.
+	Outside:
+		Initiated by entity outside system (perimiter) by unauthorized/illegitimate
+		user of system.
+
+Countermeasures:
+	Any means taken to deal with an attack.
+	Ideally devised to PREVENT an attack from succeeding.
+	When not possible/fails, goal is to detect attack and recover.
+
+Threats & Assets:
+	Hardware: 
+		Major threat to hardware is availability.
+		i.e. damage to equipment, theft.
+		Theft of storage can also threaten confidentiality.
+	Software:
+		Key threat to software is availability.
+			(delete application, damage software)
+		More difficult to deal with attacks to integrity.
+			(modification to change behaviours)
+		Key threats to privacy, unauthorised copying of software
+			is still unsolved.
+	Data:
+		Destruction of data files is a concern for availability.
+		Unauthorised DB access/File Access is concern for confidentiality
+		Modification of data files/DB is concern for integrity.
+	Networks:
+		Passive:
+			Monitoring message contents is a concern for confidentiality.
+			Traffic Analysis, can learn about location/identity of hosts.
+
+			Encryption is a countermeasure for message contents, but
+			traffic analysis still possible!
+
+			Hard to detect passive, as no alteration of data.
+		Active:
+			Involve modification of the data stream/create false stream.
+			
+			Replay Attacks: Data retransmission creates unauthorised action.
+				i.e. Car keyfob/Garage Opener
+			Masquerade: One entity claims to be another, gaining extra 
+				privledges and/or dodging accountability.
+			Modification of messages: Messages altered, delayed, reordered.
+			Denial of Service: Prevent normal use of communication, in 
+				specific place, or over full network.
+
+Security Design Principles:
+	Economy of Mechanism:
+		Design of sec measures should be as simple and small as possible
+			(lower attack surface, easier to test and verify)
+		The more complex a mechanism, the more likely flaws are.
+		Updating/Replacing simple mechanisms is cheaper and easier, hence more
+			likely to happen.
+	Open Design:
+		The design of a security mechanism should be open, vs secret.
+		Crypto algs should be open to public scrutiny, only keys must
+		remain secret. Review from experts will lead to high confidence.
+	Least Priviledge:
+		Every process/user should operate using the smallest set of
+		privileges required to complete their task.
+	Psychological Acceptability:
+		Security Mechanisms should not overly hinder usability/accessibility.
+		Otherwise users may opt to remove/work around mechanisms.
+		Security mechanisms must reflect the target users 'mental model' of
+		security, in order to be used consistently and effectively.
+		(must make sense)
+	Isolation:
+		Public systems should be isolated from critical ones.
+		This can help distance systems with a larger attack surface
+			(likely to be compromised)
+		from mission critical systems, which should minimise their attack
+		surface to the internal network, at the very least.
+	Modularity:
+		Development of secure systems should make use of a modular approach.
+		Allows for quick/easy migration to new tech/systems, enabling rapid
+		response to continuously evolving threats.
+	
+Attack Vector:
+	A specific way to breach a system (an inroad) i.e. 0-day, insider, phishing mail
+Attack Surface:	
+	The total number of attack vectors for a given system.
+	
+	Network Attack Surface: Vulns over int. network, WAN, or Internet.
+	Software Attack Surface: Vulns over application code, namely webservers.
+	Human Attack Surface: Vulns in personell, engineers. Human Error, Social eng.
+

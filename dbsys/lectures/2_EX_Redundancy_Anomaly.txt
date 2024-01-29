@@ -1,0 +1,22 @@
+Redundancy Anomaly:
+======================
+
+Employeee works on a project for specific hours a week.
+I.e. EMP_PROJ(SSN, ProjNumber, Hours, EmployeeName, ProjectName, ProjectLocation)
+
+Redundancy in employee name, proj name/location.
+This data is repeated if employee table exists, otherwise, is dependent upon having a project!
+Every employee has multiple copies of their data!
+
+Lets say we need to change the name of the project, must change for EVERY SINGLE EMPLOYEE WORKING ON IT!
+Otherwise, the relation will be inconsistent.
+
+Lets say we need to delete a project, must delete all employee data as well! Inefficient!
+
+Functional DEPENDENCY:
+==========================
+Take for example, above table.
+It can be said that Employee name can be derived from SSN. Hence SSN->Ename, Functionally Dependent.
+Can also be said PNumber->{Pname, Plocation}, FD.
+Can be said {Pnumber, Enumber}->Hours, Does not imply Pnumber->Hours & Enumber->Hours (Inference), but Hours FD of {Pnum, Enum}
+

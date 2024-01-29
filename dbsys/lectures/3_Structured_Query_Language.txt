@@ -1,0 +1,71 @@
+Structured Query Language (SQL)
+=================================
+
+SQL is declarative. (what to do not how)
+First released in '92; Latest 2023.
+All statements end in semicolon.
+
+CREATE SCHEMA <SchemaName>;
+CREATE TABLE <TableName> ...attributes...; // A new relation; Name + attrs.
+
+Attribute Types:
+	INT
+	REAL/DECIMAL (n.m)
+	CHAR(len)
+	VARCHAR(maxlen)
+	BIT(n)
+	BIT VARYING(maxlen)
+	BOOLEAN
+	DATE (YYYY-MM-DD)
+	TIMESTAMP, TIMEDELTA, INTERVAL, etc...
+
+i.e.
+CREATE TABLE DEPARTMENT (
+	Name VARCHAR(15) NOTNULL,
+	Location INT NOTNULL,
+	Manager CHAR(9) NOTNULL,
+	PRIMARYKEY(Name),
+	FOREIGNKEY(Manager) REFERENCES EMPLOYEE(Id)
+);
+
+Constraints:
+-------------
+Value Constraints:
+	Default Value
+	NOT NULL;
+	CHECK (var > 0 AND var < 2)
+
+	combines: var INT NOT NULL DEFAULT 1 CHECK (var > 0 AND var < 2)
+
+Key Constraints:
+	Primary Key is UNIQUE.
+	Entity Integrity Constraint, primary key cannot be null!
+	hence, pk INT NOT NULL PRIMARY KEY;
+
+Referential Constraints:
+	FOREIGN KEY var REFERENCES id
+	ON DELETE/ON UPDATE SET NULL/DEFAULT/CASCADE // Deletion/Update constraints
+
+Querys:
+---------
+SELECT <attr list> // what (supports * for all)
+FROM   <table list> // where
+WHERE  <condition>; // from which
+
+Can be nested; If uncorrelated: Run outer on inners output. QUERY IN (QUERY);
+	       If correlated: Run inner for each result of outer query. 
+
+Three-Value-Logic:
+--------------------
+SQL has three base-values; TRUE, FALSE, and UNKNOWN.
+
+ANY VALUE compared with NULL => UNKNOWN, even NULL = NULL => UNKNOWN
+instead use: IS NULL or IS NOT NULL
+
+
+
+
+
+
+
+

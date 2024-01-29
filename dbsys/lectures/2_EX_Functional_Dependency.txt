@@ -1,0 +1,20 @@
+Function Dependency Examples
+================================
+
+A3:
+	Consider relation R(B,O,I,S,Q,D);
+	Hold:
+		FD1: S -> D
+		FD2: I -> B
+		FD3: {I,S} -> Q
+		FD4: B-> O
+	
+	Hence, Since {I,S}->Q and I->B->O, thus I->O
+	       hence I -> {B, O}
+	       and S -> D,
+	       Thus I -> O, B
+	            S -> D
+		    {I,S} -> Q
+		    Hence {I,S} -> R
+
+

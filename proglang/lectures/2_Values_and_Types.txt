@@ -1,0 +1,79 @@
+Variables and Types
+====================
+
+A type is a set of values, with operations that can be applied uniformly to them
+
+
+Value V is of type T, if v in set of values of T. I.e. false is of type bool
+Expression E is of type T if, when evaluation terminates normally, is guaranteed to yield a value v of type T.
+
+Primitive Types:
+	Primitive Type is type whose values are primitive, cannot be decomposed.
+	Every PL provides primitive types, influenced by the PL's target application domain.
+	Some PLs also allow definition of new Primitives.
+
+	i.e. VOID = {void}, BOOL={false,true}, CHAR={A..Za..z0..9}, INT={x in N such that x < m, x>-m} (integers up to m (limit int)), FLOAT=R (real num)
+	Cardinalities: #VOID=1, #BOOL=2, #CHAR=128/256/etc, #INT=2m, #FLOAT=(inf theoretically but in reality IEE754 limit)
+
+Composite Types:
+	A type whose values are 'composite' i.e. can be decomposed.
+	
+	PLs implement many kinds of composite types, but generally exist within 4 key groups:
+		Cartesian Products: Tuples, Structs, Records
+		Disjoint Unions: Algebraic Types/ Variant Records, Objects
+		Mappings: Arrays/Functions
+		Recursive Types: Lists, Trees, etc
+
+	Cartesian Product:
+		Values of two+ types are grouped into pairs.
+		SxT is type of all pairs (x,y) such that x in S, and y in T.
+		Cardinality of Cartesian Product type #(S x T) = #S x #T
+							^^^^^	 ^^^^^^^ Notation is mathematical, binding, real multiplication of scalars.
+							^^^^^ Arbitrary, just notation
+							      no actual meaning.
+	
+		We can generalise from pairs, to tuples. i.e. S_1 x S_2 x ... x S_n = (x_1 in S_1, x_2 in S_2, ...)
+		i.e. foo: (String, Vec<String>, Integer)
+	
+		Structs are similar, Products of other Types
+
+		Operations: Construction, selection
+	
+	Disjoin Union Types:
+		A value is chosen from one or more members of the union.
+		S+T is the type of a disjoint union. Each du value consists of a variant, (either S or T)
+		along with a TAG. S+T = {left x | x in S} U {right y | y in T}
+		#(S+T) = #S + #T
+
+		Operations: construct from tag & value, tag test to check tag, projection (get a particular variant, i.e. match in RS.)
+	
+	Mapping Types:
+		m: S->T, m is a mapping from type S to type T (functions)
+
+		Arrays can be understood as a mapping, i.e. elems of T, index of type S. Thus type is S->T
+		Arrays are finite mappings, hence S must be finite range of consecutive values {0...len(array))
+		
+		Operations: construction, indexing
+
+		Function Type:
+			f: (A,B) -> T :: f is a binary function with two arguments of type A,B respectively and result type T.
+			Functions are mappings from arguments to results.
+			Functions can represent infinite mappings, given results are computed.
+		
+			Operations: construction, application
+
+ 	Recursive Types:
+		enum List<T> {
+    			Nil,
+		 	Cons(T, Box<List<T>>)
+		}
+	
+		let a: List<i32> = List::Cons(7, Box::new(List::Cons(13, Box::new(List::Nil))));
+		
+		corresponds to in course: LIST = VOID + (VALUE x LIST (ptr really))
+
+
+		
+	
+
+

@@ -1,0 +1,152 @@
+Access Control
+==================
+
+RCC4949: Access Control is process of sys res regulation accord. to plcy.
+	 i.e. only authorised entities (users, progs, procs, sys)
+
+Authentication: Verify credentials of user are valid
+Authorization: Granting rights/access to entity, to perform an action on system.
+Audit: Review/Examine sys activ. to ensure system is adequately protected/no breaches.
+
+Mechanism:
+	Authentication Function  ->      Access Control Function 
+	bool: is_logged_in?      ->  (claim) -> bool: is_authorised?
+
+	
+Security Admin maintains AUTHORISATION DATABASE.
+Auditing Function: Monitors/Records accesses to system
+Object: Resource to which access is controlled
+Subject: Entity capable of accessing objects
+Access Right (claim): Describes method of access allowed
+		      (read, write, exec, delete, create, search/index)
+Access Control Policy: A framework dictating what access is permitted/by whom/etc
+Protection State: AUTHORISATION DATABASE (but must provide edit mechanism)
+
+Discretionary Access Control:
+-------------------------------
+Controls access based on the identity of the actor, based on access rules 
+stating which/what actors may do. 
+
+Stored as access matrix:
+
+	file1 file2 file3
+user1   r,w,e  r,w    w
+user2     -     r     e
+user3     -     -     -
+
+or as Access Control List (decompose and store access matrix as columns)
+file1 -> user1 (r,w,e)
+file2 -> user1 (r,w) -> user2 (r)
+file3 -> user1 (w) -> user2 (e)
+^^^ Easy to query by file, hard by user!
+
+See Capability List (decompose in other direction, by rows)
+user1 -> file1 (r,w,e) -> file2 (r,w) -> file3 (w)
+ditto.
+
+Each of these permission is like a ticket for access.
+Is hard to find users who access a resource.
+
+Must be editable at runtime by users of system, this is called protection state
+Objects can be more than just files, can be procs, devcs, memlocs, subjects
+   S1 S2 S3 F1 F2 P1 P2 D1 D2
+S1 c  o  oc r  ro w  w  s  o
+S2    c     w  e        o  s
+S3 ditto.
+
+A subject So requests K for object X.
+A contoller related to X, looks up in matrix A
+    to check if K is in A[S0, X], if so, allow access, and viceversa.
+
+See lecture 3 slide 18 for protection state specifics and table of reference commands
+
+Protection Domain is a set of objects with the access rights to the objects.
+A row in the access matrix defines a protection domain.
+In a general case, users can spawn processes with a subset of the users access rights.
+This is defined by a NEW protection domain associated with the child process.
+
+In case of unix:
+	Index Node: Control struct containing vital metadata on file (size, perms, user)
+	            May be many files within a single INode, but only one inode per file.
+		    On disk there is inode table, and inode is loaded into mem with file
+		    A directory has its own inode, and contains list of child inodes/files.
+
+	Every Unix user is assigned a unique user ID.
+	Every user is a member of a primary group + others, each with unique group id.
+	When a file is created, is marked by particular user ID. (owns the file)
+	A file also has associated 12 protection bits.
+	
+	  Owner    Group   Others   Special
+	r? w? x? r? w? x? r? w? x?  1 2 3
+
+	1: SetUID: when a user with x x's file, allocate perms of Owner to executor.
+	2: SetGID: ditto, but user gets group perms.
+	3: Sticky Bit: Applied to dirs; When set only owners of subfiles can modify subfiles.
+
+	Can be set with numeric method: 751 (add 4,2,1)
+
+	All is overridden by superuser!
+
+Role Based Access Control:
+-----------------------------
+
+Like DBAC, but assign permissions to specific roles, which are held by users, 
+	rather than users directly. See Discord.
+
+Users to roles is M2M
+
+User: Individual with access to system. Has unique ID.
+Role: A job within an organisation with associated control/authority/resposibilites.
+Permission: An approval of a specific mode/action to a given object.
+Session: A mapping between a user and an ACTIVATED subset of roles.
+
+RBAC0 is basic rbac, see lec 3 slide 31.
+RBAC1 is next level, adds role hierarchies, subordinate roles have subset of permissions of parent
+RBAC2 is RBAC0 but with CONSTRAINTS, i.e. roles are mutually exclusive,
+				          or max nums of users per role.
+RBAC3 is all of above!
+
+RBAC has user create session in order to use given roles. Should use least needed roles
+	to complete a given action, following principle of Least Privledge
+
+Attrubute Based Access Control:
+----------------------------------
+Subject Attributes: Each subject has associated attributes. I.e. ID, Name, Job Title
+Object Attribute: Objects ditto. Extracted from metadata
+Environment Attributes: Operational, Technical, context of info access.
+
+Policy: Set of rules & Relations that govern allowed actions
+Privledges: represent the authorised actions for a given subject. (within policies)
+
+ABAC Policy Model:
+	Subject attrs: Sa1, Sa2, ...
+	Object attrs: Oa1, ...
+	Environment attrs: Ea1, ...
+	Attribute relations: 
+		ATTR(s)⊆ Sa1 x Sa2
+		ATTR(o) ditto
+	Policy Rule:
+		f(ATTR(s), ATTR(o), ATTR(e)) = 1 <=> s can access o in e
+	Policy Store: Consists of many policy rules
+
+
+Overall Compared:
+
+DAC:
+	Simple, User Friendly
+	Hard to scale/manage, Security can be undermined by user granting access.
+
+RBAC:
+	Better security as individuals do not have permissions, only roles
+	Easy to scale and manage, can apply changes uniformly over whole organization
+	Not flexible in dynamic settings, i.e. where new roles may be being created frequently.
+						(role explosion)
+
+ABAC:
+	Highly flexible, by advanced expressive policy model
+	Easier to add/remove perms by modifying attrs, than by adjusting roles.
+	Increased complexity in design, implementation, performance, and maintainance/management
+
+
+
+

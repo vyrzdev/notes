@@ -1,0 +1,74 @@
+Transport Layer Security
+==========================
+
+TCP HANDSHAKE, but in parallel:
+
+Client      Server
+  |---SYN----->|
+  |<-SYN,ACK---|
+  |-CH, ACK--->| (CH: ClientHello)
+  |<------SH---| (SH: ServerHello)
+  |----FIN---->| (FIN: Carries first data)
+
+Adds 1 RTT to handshake!
+
+TLS says I am v1.2 in header; with extension hidden saying v1.3;
+This is due to middleboxes breaking if version changes.
+Common middlebox usage in banks to control TLS data ingress/egress
+
+ClientHello:
+	Version (v1.2 even for v1.3 see above)
+	Supported Algorithms
+	Name of Server client is connecting; UNENCRYPTED
+		Tradeoff between security and ease of blocking.
+		Needed for reverse proxies
+	Contains no data.
+
+ServerHello:
+	Version (ditto.)
+	List of chosen algs; subset of Supported Algs in CH.
+	Server Pub Key + Digital Sig (optional)
+	Contains no data.
+
+Finished:
+	Client public key
+	Digital Sig (optional)
+	May contain start of data.
+
+Client and server use Ephemeral Elliptic Curve Diffie-Hellman Exchange. (ECDHE)
+	Client sends pub key
+	Server sends pub key 
+	New priv/pub combo for EACH connection (Ephemeral)
+	Client and server combine two pub keys with PRIV KEY
+		to derive shared key via ECDHE.
+	Server proves ident using digital signature (This must happen because
+						     ident is not implicit
+						     as shared key is derived
+						     independently)
+
+
+TLS v1.3 Data Record Protocol:
+	Data split into RECORDS of <= 2^14 bytes
+	Each record is encrypted & authenticated with a seq number
+	Can renegotiate keys during stream of records
+	TCP does not preserve message bounds; TLS adds framing.
+
+TLS 0-RTT Mode:
+	Must be used CAREFULLY!
+	If servers have communicated before; can re-use key.
+	Server can send additional keys to be used next time.
+	On next time, data can be included in CH. Encrypted with psk.
+	0-RTT data may be delivered multiple times;
+	Hence must only be used for applcations where replay is 
+	non fatal (e.g. avoid bank/payments)
+
+TLS Limitations:
+	Is secure
+	Does not encrypt server name. EXPOSED (ptcl. exst. ESNI but is not used)
+	Operates within TCP/IP; IP addrs/Port numbers unprotected.
+	Relies on PKI to validate public keys. Trust risk.
+	0-rtt replay.
+	Also seq #'s reveal speed and size of data
+
+
+

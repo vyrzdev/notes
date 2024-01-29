@@ -1,0 +1,72 @@
+Compilers and Interpreters
+=============================
+
+Translator (Compiler/Assembler/Transpilers/Decompilers)
+---------------------------------------------------------
+An S -> T translator accepts lang S, and translates to equivalent code in lang T.
+
+Compiler: Translates from high-level -> low-level. C -> x86as or C -> x86 direct
+Assembler: Translates assembly to machine code: x86as -> x86
+Transpiler: Translates between two high level: Java -> C (TS -> JS)
+Decompiler: Translates lowlevel -> higher level: JVM -> Java
+
+Interpreters
+--------------
+An S interpreter accepts code expressed in lang S, and executes immediately.
+Works by FETCH, ANALYSE, EXECUTE. ONE INSTRUCTION at a TIME
+Slower than executing native machine code. Higher level => Slower and Slower.
+Tradeoff of compile time for runtime. (often irrelevant, 
+					dev should get gud not torture others because 
+					they cant afford a good cpu)
+Intepretation makes sense when: Executing interactively (REPL), high portability.
+				(JVM interesting)
+
+Real Machines have machine code executed by hardware;
+Virtual machine has machine code executed by interpreter;
+
+i.e. Suppose architecture/instruction set of new machine>
+     Too expensive to make hardware. Instead:
+     
+     | MVM | :: An interpeter for MVM machine code; expr. in C.
+     |  C  |
+
+     | MVM |                  | MVM | :: Now have emulator for MVM -> x86;
+     |  C  | : | C -> x86 | : | x86 |
+                   |x86|
+		   |x86|
+		    \_/
+
+
+
+Interpretive Compilers:
+------------------------
+Compiler takes a long time to reach machine code; but fast execution
+Interpreter starts execution right away; but slow exec.
+
+Interpretive compiler is compromise; Intermediate VM code.
+
+JIT Compilers:
+----------------
+A JIT compiler translates vm to native JUST IN TIME.
+A Java JIT compiler usually SELECTIVELY compiles code. Works along interpreter, compiling 
+frequently called functions into native.
+
+Portable Compilers:
+--------------------
+A program is portable, can be made to run on diff machines without major change.
+A compiler that generates native machine code is unportable as needs change;
+but compiler generating VM code can be portable.
+
+Chicken & Egg Problem:
+-----------------------
+Can't run JVM interpreter until have Java Compiler
+Cant run java compiler until have JVM interpreter.
+
+Solution, must bootstrap.
+
+take:  :::Java->JVM::: & :::Java->JVM::: & :: JVM  ::
+	 :   Java  :       :   JVM   :     :: Java ::
+
+Aiming to build a Java -> Machine Lang workflow.
+
+MUST REVISE BOOTSTRAP

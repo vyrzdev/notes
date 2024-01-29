@@ -1,0 +1,48 @@
+Tombstone Diagrams
+====================
+
+:::P:::   :::S->T:::  ::S::   ::M::
+ ::L::      ::L::     ::L::    :M:
+
+ :::C->x86:::
+   ::x86::
+    :x86:
+
+Software:
+	_______
+	|  P  |	  :: A program P
+	 | L |    :: in language L
+      ____________
+      |  S -> T  | :: S -> T Translator
+         |  L |    :: in language L
+        _______
+        |  S  | :: S  interpreter in L
+        |  L  |
+
+Hardware:
+	|  M  | :: Machine M which executres language M
+	 \___/
+
+i.e. Translators:
+
+| x86as -> x86 |   | Java -> C |
+     | x86 |           | C |
+
+|  Java -> JVM |   | JVM -> Java |
+     |Java |           | C |
+
+Then for programs:	
+_________
+|   P   |
+  | M |   :: M is machine itself and its machine code; Must match;
+  | M |   :: Arguably, M is defined by its input lang M. Hence equiv
+   \_/
+
+Then for translation:
+_____            _____
+| P |            | P |  :: This is an S->T Translator expressed in M;
+ |S| :  S -> T  : |T|   :: Thus possible to translate from P -> T.
+        | M |           :: To join, endpoints must match
+	| M |
+	 \_/
+

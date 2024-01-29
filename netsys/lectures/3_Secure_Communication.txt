@@ -1,0 +1,43 @@
+Secure Communications
+=======================
+
+Data traversing network can be read/modified by all devices along the way.
+Cannot be prevented (xcept in quantum lolz); Can be mitigated.
+Authenticate data to verify content is genuine
+Encrypt data to prevent MITM reading the data.
+
+Many organisations monitor traffic: Govt, Business, Network Operators, Criminals
+No way to stop malicious actors while allowing law enforcement.
+e.g. ISP blocks illegal content via DNS; Browser uses DNS-HTTP to prevent attackers
+	doing cache poisioning to maliciously redirect.
+	Consider trade-off here?
+
+Network Operators deploy MIddleboxes to monitor/modify traffic.
+Some needed, some less so. Middleboxes depend on knowledge of protocol.
+This is problem, PROTOCOL OSSIFICATION! Cannot change any protocols
+because these middleboxes will not cope with changes. The more encrypted/
+limited the protocol the better, as middleboxes will not operate on as much
+of the packet/data, but limits the ability of middleboxes to be useful.
+
+Key Escrow is where keys are stored in escrow so that govt can access it.
+Creates a single attack surface for entire encrypted system, single point of failure.
+Allowing govt leads to inevitable risk of malicious access via same portal.
+
+Alternative approach; Instead of trying to monitor in transit; Monitor
+at end-point. I.e. do check on/off device, from the device software;
+i.e. whatsapp scan for child abuse content before sending/after receiving
+Risks in accuracy of scans, etc. Dealing with this much content is hard. 
+
+Solution of hashing content and publishing blacklist of known abuse
+content by hash; Has free-speech impl. Who controls blacklist, can
+it be misused to supress legal/free-speech content?
+
+Argument to be made, that further encryption of protocols, will have both security
+and anti-OSSIFICATION methods.
+
+Designing extensible protocol makes easier to update endpoints. 
+Designing encryption in transit by default makes less likely to break middleboxes;
+	also limits effectiveness of middleboxes; Trade-off privacy/safety/control
+
+
+

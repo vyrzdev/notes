@@ -1,0 +1,21 @@
+Post Quantum Computer Cryptography
+====================================
+
+Some quantum algs are capable of breaking/may break encryption
+when they are able to be run. Symmetric encryption not major threat. (Factor 2 improvement, mild.)
+
+
+BUT ASYMMETRIC ENCRYPTION relies on certain one-way ops that quantum computers can
+solve with relative ease. Works on SHORS algorithm. Breaks integer factorisation, and
+also Discrete Log. (RSA & ECDH respectively)
+
+In order for this to be a risk; Quantum computers must come further.
+As of now, does not exist yet in public eye. May exist; likely will sooner
+than expected
+
+Currently exist bounty/prize for secure quantum algorithm.
+IETF has a working group.
+
+See Kyber, lattice crypto???
+
+

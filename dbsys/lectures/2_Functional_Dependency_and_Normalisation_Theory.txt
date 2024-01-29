@@ -1,0 +1,38 @@
+Functional Dependency & Normalisation Theory
+===============================================
+Normalization Theory:
+	Transform relational schema into set of good/efficient relations
+
+
+Assessing Quality of Schema:
+	start by defining needs, i.e. insertion/deletion/updates?
+
+	Guidelines:
+		The attributes of a relation should MAKE SENSE.
+		i.e. Attributes of different entities should not be in the same relation.
+		
+		Any relationshop between relations should be represented...
+	         ...ONLY by Foreign Keys & Primary Keys.
+
+		Avoid redundant tuples, do not repeat same info.
+		Cost: Storage, Inconsistency/Operation cost (must be kept consistent for all operations)
+		Replicas tend to result in consistency anomalies.
+	
+		
+		Relations should have as few NULL values as possible.
+		Reasons for NULL:
+			A value is inapplicable/invlaid
+			A value is unknown (might exist)
+			A value is known to exist, but unavailable!
+		
+			i.e. Given employees may have mult numbers, add 3 phone number attrs, and leave NULL.
+			     BUT! Very few employees have 3 numbers, wasteful, lots of NULL for no reason!
+			     So use seperate relation, with FK to employee and number column.
+
+		Design relations to avoid FICTITIOUS tuples after join:
+
+Functional Dependency:
+	FD is a constraint, derived from relationship between attributes.
+	"Given relation, an attr X functionally determines an attr Y, if a value of X determines a unique value of Y" - Codd1970
+
+	

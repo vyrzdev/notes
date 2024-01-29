@@ -1,0 +1,18 @@
+Secure Coding
+===============
+
+Protocol Design:
+	Be liberal in what you accept;
+	CONSERVATIVE in what you send!
+
+	Postels law; he lived with pals; today we live with sharks.
+	Postel is WRONG!
+
+	Common attacks send malformed input.
+	By restricting valid input domain/language you make
+	it simpler to ensure data conforms safely.
+	Lower attack surface
+
+Can make no assumptions about input form. Must guarantee all.
+	
+

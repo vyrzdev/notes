@@ -1,0 +1,42 @@
+Cryptography Methods
+=====================
+
+Symmetric:
+	Converts plain text into cipher;
+	shared secret between sender/reciever allows for encryption/decryption.
+	Very fast, good for protecting data in place (ON disk)
+	Algs are public.
+
+Asymmetric: (RSA, Diffie-Hellman)
+	Public Key converts plain text into cypher text.
+	Algs are public.
+	Public key algs use two keys, related one-way function.
+	Public key is distributed for a user;
+	Private key is kept secret.
+	Public key encrypts, private decrypts.
+	Very slow to encrypt/decrypt; But very secure.
+
+Hybrid:
+	Uses Asymmetric to securely transmit a shared secret 
+	for symettric encryption.
+
+	Solves speed and security problems.
+
+RSA has common mistake in impl. Must have constant runtime regardless of input
+as if depends on input, can reverse to predict input/give greater clue.
+
+
+How to authenticate? Prove identity/authenticity of message.
+	Generate a digital signature, authenticating the message.
+		do this by calculating the hash of message, and encrypting
+		hash with own private key.
+	
+	Append this sig to the message.
+
+	On reciever side, decrypt message with sender pub key
+	Calc hash of message.
+	compare hash of sender to own hash, if match, authentic.
+
+Political issues; Must trust public key infrastructure (web certs)
+
+

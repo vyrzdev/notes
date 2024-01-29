@@ -1,0 +1,76 @@
+Connection Establishment in a Fragmented Network
+====================================================
+
+Makefile/C Syntax Recap/Overview: $@ (target name), $< (1st prereq)
+
+TCP:
+	Provides reliable, ordered, byte streams over network
+	Provides congestion control
+	Segments as data in IP Packets, as data in Link Layer Frames, as data over Physical
+
+	Segment Format:
+	
+	Source Port | Dest Port
+	Sequence Number
+	Ack Number
+	datoffset | reserved | urg/ack/psh/rst/syn/fin | Recieve Window Size
+	Checksum | Urgent Pointer
+	TCP OPTIONS (VARIABLE LEN EXTENSION HEADER)
+	Payload (VARIABLE LEN)
+
+	Message Ordering is preserved! Message boundaries are NOT! (MESSAGE SIZE/BORDER MUST BE DEFINED IN SUPERPROTO)
+	Adapts Send rate to match network capacity.
+
+Connection Establishment Latency:
+-----------------------------------
+	See prev lec for TCP hshk.
+	 
+	connect... -> Syn (seq=x (RANDOM STARTING POINT))
+	accept() -> Syn, Ack (ack=x+1, seq=y (RANDOM STARTING POINT))
+	...connect() -> Ack (ack=y+1, seq=x+1)
+
+	Then send/recv to transmit/recieve data, non-blocked.
+	For extremely short connections, handshake is significant overhead. (1(.5?)RTT) (1 RTT for client to send, 1.5 for server to send)
+	NO FIREWALL ON IPv6 UNIVERSITY!
+
+	Happy Eyeballs:
+	---------------
+	Do DNS lookup for ipv6 and ipv4 simultaneously (generally do ipv4 seq, and ipv6 sequentially, avoid overload router)
+	In each thread, try to connect in parallel over ipv6/ipv4
+	Whichever succeeds first, cancel other.
+	Painful to implement, BUT IMPORTANT!
+
+
+Connection Establishment over NAT:
+------------------------------------
+Peer to Peer Connection Establishment: Ideally, should be able to P2P with all clients, in practice NAT makes this impossible.
+Network Address Translation: IPv4 space run out, hence workaround; share single IP on mult clients. (Home net)
+
+Take cases:
+	Single Host connection: ISP allocs single ip to single host, no NAT in use!
+	Multiple Host connection: 
+		in theory, ISP gives customer range of IPs, one for each host, and customers router routes based on dest IP.
+		in theory, no network address translation used.
+
+		in practice, customer is assigned a single IP, and puts a NAT router on that IP. Each private host gets a PRIVATE IP.
+		in practice, the NAT router performs NAT on every packet that passes through it (in either direction)
+				
+		NAT routers achieve this by:
+			Change source IP in packet header to external addr.
+			Change source port to unused value.
+			Saves this mapping, hence reverse can be performed on replies.
+
+NAT encourages/pushes centralisation, over p2p. They make p2p nearly impossible without STUN/TURN servers.
+
+Peer2Peer NAT Traversal:
+	Peers connect to a referral server!
+	Server helps discover NAT bindings for each.
+	Server helps with relaying binding info.
+	Send candidate addresses to each peer.
+	Peers try systematically to establish connection.
+
+Binding Discovery:
+	STUN == Binding Discovery.
+	Packets sent from host on priv, will have src port/ip translated.
+	Server sends back to host what IP/Port it sees.
+			

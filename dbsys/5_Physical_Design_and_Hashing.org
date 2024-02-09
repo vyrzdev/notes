@@ -1,0 +1,172 @@
+Physical Design & Hashing
+===========================
+
+* Physical Storage Hierarchy:
+Primary: RAM/Cache
+Secondary: HDD/SSD
+Tertiary: Optical/Tape
+
+Progress downwards, capacity+, speed-, cost-
+
+Fundamentally, a database is probably too big to fit in main memory.
+While it may, is not a feasible solution for scaling load. High cost.
+Hence, data access will involve secondary storage in some way.
+
+Consequences of this:
+    Data must be loaded into mem. from HDD.
+    Data must be processed in the mem. and then returned to storage.
+
+    Hence the slow for data access. HDD is bottleneck. 30ms vs 30ns.
+
+In order to minimise this delay, we must organize the data on the HDD.
+
+** Organization-Based Optimization
+Goal: Organize tuples on disk to min. I/O latency.
+
+A tuple is represented by a *Record*;
+Records are grouped into *Blocks*;
+A *File* is a group of blocks.
+
+Records can be of Fixed or Variable length.
+(based on members.)
+
+*** Blocking Factor
+A block is of *Fixed* length. Normally 512-4096 bytes.
+floor(x) is largest whole int <= x. i.e. 3.3 -> 3, 3.6 -> 3
+
+Consider a record of length R and a block of length B.
+The number of records stored in this block is the *Blocking Factor*
+
+Blocking Factor = floor(B/R);
+
+*** Blocks -> Files on Disk.
+Goal: Allocate blocks of files on disk.
+
+Linked Allocation: Each block i has ptr. to phys. loc. of
+                   the next logical block i+1, anywhere on disk.
+                   (Linked List of Blocks)
+
+**** Example:
+Relation EMPLOYEE has r = 1103 tuples.
+Each one corresponds to a FIXED LENGTH Record.
+Record has fields:
+    Name: 30 Bytes
+    SSN: 10 Bytes
+    Addr: 60 Bytes -> TOTAL = 60+30+10 = 100bytes.
+
+Task, given block size of 512 bytes, what is blocking factor?
+How many blocks are in file?
+R = 100, B = 512, hence Blocking Factor = floor(512/100) = 5
+Hence 5 records per block; 221 blocks.
+
+*** File Structures
+Goal: Distribute records within blocks, to minimise I/O Cost.
+
+Heap File: (Unordered)
+    All new records are appended to the file at the end of last block.
+Ordered File: (Sequential)
+    Records are kept physically sorted based on some key.
+Hash File:
+    A hashing function H(x) is applied to each record field x.
+    The output Y is the physical block address.
+    Maps a record, to a block.
+
+The Hash file tends to be ideal.
+The question must be asked; which field to use for hashing/ordering.
+Which will minimise cost?
+
+*** Expected I/O Costs
+For a given file type (heap, ordered, hash)
+
+I/O Cost is defned as cost for:
+    Retrieval of a *whole* block from disk to memory to search for a record. (search cost)
+
+    Insert/Delete/Update a record by transferring the *whole* block
+    from memory to disk (update cost)
+
+Cost Function: Expected # of block accesses/updates to search/delete/
+               /update/insert a record.
+
+Blocks are the *Minimum Communcation Unit*; we do not transfer records
+ ...between disk and memory, only blocks.
+
+*** Expectation of RandVar/Cost Function
+: Let X be a discrete random variable.
+: i.e. X in {1,3,6,10};
+:
+: Let P(X=x) be probability that X has value x.
+: P(X=1) = 0.2, P(X=3) = 0.1, P(X=6) = 0.5, P(X=10) = 0.2
+: tfr: Sum_x(P(X=x)) = 1.
+: Expectation of X, E[X] is the weighted sum of the values.
+: $E[x] = \sum_{x} P(X=x) \Times x$
+:
+: Expectation of a cost function.
+: For each value x, assign a specific real valued Cost Function C(X)
+: which returns the cost in block accesses for a value in X.
+: C(X) us a random variable based on X.
+: Thus Expected Cost E[C[X]].
+
+*** Heap File
+Insertion of new records is *efficient*
+    (load last block from disk to mem,
+        insert new record at end and write back)
+
+Constant O(1) access.
+
+Retrieval is *inefficient*
+    (linear search through all blocks)
+    (loading block at a time; search for work; repeat.)
+
+Complexity O(b) worst case, does not scale well with b.
+
+Deletion is *inefficient*
+    (Retrieval as above to find block containing)
+    (Remove Record from block)
+    (Write Block Back to disk)
+    This leaves *EMPTY SPACE*, use a deletion marker.
+                               then periodically reorganise.
+Complexity O(b) + O(1).
+
+*** Sequential File
+All the records are physically sorted by a key.
+Are kept sorted at all times.
+
+Most suitable for queries involving sequential scanning
+    or ordering field.
+
+Retrieval based on ordering field: $O(\log_{2}b)$
+Retrieval not based on ordering field: O(b)
+
+Can perform binary search.
+
+Insertion is expensive. Binary Search + Move Records to insert.
+Chain Pointers are option; lose physical layout, gain efficient insert.
+    (Linked List Style)
+Deletion is expensive. Binary Search + Update Deletion + Pointers
+                       or move all records in physical.
+
+Update on ordering field expensive, same issue as insertion.
+Update on normal field, cheap! $O(\log_{2}b) + O(1)$
+
+*** Hash File
+Partition Records into M Buckets.
+Each Bucket can have 1+ block.
+Choose some hash function with outputs from 0-M-1;
+Requirement that function must evenly (uniformly) distribute
+the records into the buckets. I.e. for each input, equal prob of a given bucket. 1/M.
+
+I.e. y = h(k) = k mod M
+
+**** Construction:
+Mapping record to bucket is called EXTERNAL HASHING over FIELD k.
+Normally, collisions occur. Many values can map to same bucket.
+This is okay, buckets represent groups of matching values.
+When the bucket is full; use chain pointers to extend.
+
+**** Complexity
+Deletion is O(1) | O(1) + O(n) where n=# of overflow blocks.
+Update is ditto. When on hash field, reinsert record.
+Range Queries are INEFFICIENT.
+O(m) + O(nm) where m is # of distinct vals within range.
+This is because hash functions uniformly distribute, hence irrelevant
+of underlying order.

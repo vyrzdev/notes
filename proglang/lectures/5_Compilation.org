@@ -1,0 +1,100 @@
+Compilation!
+==============
+
+A S -> T Compiler translates a source prog in S, into object code in T.
+It will only do this if the input prog conforms to syntax; typing; scoping rules.
+
+* Hence, implied split of compile into three stages:
+Data flows between these stages as ASTs!
+
+** Syntactical Analysis
+Parse the src prog to check if it is *well formed*
+& to determine its *phrase structure*, in accordance
+with the src langs *syntax*.
+** Contextual Analysis
+Anaylze the parsed program to check if it conforms to
+the src langs *scope rules*, and *type rules*
+** Code Generation
+Translate the parsed program to object code, in accordance
+with the src langs *semantics*
+
+* Case Study, the FUN Language
+Fun is a simple imperative language.
+
+A FUN program declares some global variables, and some procedures/functions.
+    *Always* includes a procedure names main (entrypoint).
+
+A FUN procedure/function may have a *single* parameter.
+    It may also declare local variables.
+    A function returns a result, not a procedure
+
+FUN has two data types, bool and int.
+
+FUN commands can be assignment, proc/func calls, if <command>, while <command>, sequential.
+
+FUN Programs are free-form. Ignore EOL/Spaces/Tabs
+
+** Sample FUN Program
+#+BEGIN_SRC python
+func int fact (int n):
+    int f = 1
+    while n > 1:
+        f = f*n
+        n = n-1
+    return f
+
+proc main ():
+    int num = read()
+    write(num)
+    write(fact(num))
+#+END_SRC
+** TODO See FUN Spec on Moodle
+Not available as of writing; will become.
+** The FUN Compiler
+The FUN compiler generates SVM code.
+It is written in Java.
+
+
+*** It contains the following classes:
+If any errors encountered, compilation is terminated.
+
+**** Syntactical Analyser (FunLexer, FunParser)
+Lexes and parses the src prog; Prints any errors, generates an AST.
+**** Contextual Analyser (FunChecker)
+Performs Scope/type Checking, prints any errors
+**** Code Generator (FunEncoder)
+Emits object code into the SVM code stores. Then prints object code.
+** The FUN Driver
+Compiles the src into an SVM object code prog.
+If no errors, calls SVM Interpreter, to run the prog.
+
+
+* Abstract Syntax Trees
+An AST is a convenient way to represent a src prog's *phrase structure*
+
+** Structure of an AST
+Each Leaf Node represents an identifier or literal.
+Each internal node corresponds to a language construct;
+    i.e. a variable declaration or while-command.
+The internal node's subtrees represent the components of itself.
+
+ASTs are *MUCH MORE COMPACT* than syntax trees.
+
+** Example AST:
+: For Expression (x+13)*(y-z)
+:      TIMES
+:        |
+:    +-------+
+:   PLUS     MINUS
+:   |          |
+: +-+--+     +-+--+
+: ID   NUM   ID   ID
+: 'x'  '13'  'y'  'z'
+
+See lecture slides for more examples.
+
+** TODO See AST through each stage of compilation.
+Can find example run-through in lecture slides.
+Too Complex to design right now.
+
+Yep this is how I note

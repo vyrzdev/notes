@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2024-02-09 Fri 11:45 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/bigblow_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/bigblow_theme/css/bigblow.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/bigblow_theme/css/hideshow.css"/>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/bigblow_theme/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/bigblow_theme/js/jquery-ui-1.10.2.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/bigblow_theme/js/jquery.localscroll-min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/bigblow_theme/js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/bigblow_theme/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/bigblow_theme/js/bigblow.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/bigblow_theme/js/hideshow.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgfcf99b1">1. Tokens</a></li>
+<li><a href="#org42037c8">2. Seperators</a></li>
+<li><a href="#orgc359404">3. Lexer</a>
+<ul>
+<li><a href="#org0432fb9">3.1. Example:</a></li>
+</ul>
+</li>
+<li><a href="#org08bc9f2">4. Parser</a>
+<ul>
+<li><a href="#orgdd5692f">4.1. Top Down // Recursive Descent.</a>
+<ul>
+<li><a href="#org919e48b">4.1.1. General Rules for Recursive Descent Parsing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org4427712">5. Compiler Generation Tools</a>
+<ul>
+<li><a href="#orged89218">5.1. ANTLR</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Syntactic Analysis
+<code>==================</code>
+</p>
+
+<p>
+Syntactic Analysis checks that src program is
+ &#x2026; <b>well formed</b>, and determines its <b>phrase structure</b>
+</p>
+
+<p>
+Syntactic Analysis can be broken into Lexer &amp; Parser.
+</p>
+
+<p>
+Syntactic Analyser takes src prog, and outputs AST.
+Lexer passes <b>token stream</b> to the Parser.
+</p>
+
+<p>
+Applications of Syntactic Analysis:
+    Compilers, XML Parsing, Web Browsers (parse/render),
+    Natural Language Parsing
+</p>
+<div id="outline-container-orgfcf99b1" class="outline-2">
+<h2 id="orgfcf99b1"><span class="section-number-2">1.</span> Tokens</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Textual symbols which influence prog phrase structure.
+i.e. literals, identifiers, operators, keywords, punctuation
+</p>
+
+<p>
+Each token has a <b>tag</b> and a <b>text</b>
+i.e. addition has tag &ldquo;PLUS&rdquo; and text &rsquo;+&rsquo;
+</p>
+</div>
+</div>
+<div id="outline-container-org42037c8" class="outline-2">
+<h2 id="org42037c8"><span class="section-number-2">2.</span> Seperators</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Text which does not influence phrase structure.
+i.e. Spaces &amp; Comments.
+In python, EOL is a token. Normally is a Seperator.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc359404" class="outline-2">
+<h2 id="orgc359404"><span class="section-number-2">3.</span> Lexer</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Breaks a SRC prog down into <b>tokens</b>
+At each step the lexer inspects the next char of src prog.
+When no src prog left, outputs EOF.
+</p>
+</div>
+<div id="outline-container-org0432fb9" class="outline-3">
+<h3 id="org0432fb9"><span class="section-number-3">3.1.</span> Example:</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+If next char is:
+    Space -&gt; Discard.
+    Start of Comment -&gt; Scan rest and discard
+    Puntuation Mark -&gt; Corresponding Token
+    Digit -&gt; Scan remaining digits &amp; output token.
+    Letter -&gt; Scan remaining letters &amp; output token.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org08bc9f2" class="outline-2">
+<h2 id="org08bc9f2"><span class="section-number-2">4.</span> Parser</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Determines the <b>phrase structure</b> of the SRC prog.
+(Converts a token stream into an AST.)
+</p>
+
+<p>
+There are two kinds of Parsing, Top-Down and Bottom-Up
+</p>
+</div>
+<div id="outline-container-orgdd5692f" class="outline-3">
+<h3 id="orgdd5692f"><span class="section-number-3">4.1.</span> Top Down // Recursive Descent.</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Common and simple, uses recursive procedures to process
+the token stream.
+Can be easily defined from a src lang grammar.
+</p>
+
+<p>
+Consists of a family of parsing methods N() for each
+non-terminal symbol of the src language grammar.
+And an auxilliary method &rsquo;match()&rsquo;
+</p>
+
+<p>
+Match(t) checks if next token has a given tag;
+For each nonterminal N, method N() checks if next
+few tokens make up a phrase of class N.
+</p>
+
+<p>
+If Ye, consumes and returns AST representing the phrase.
+</p>
+
+<p>
+Can find these methods in CalcParser.java
+</p>
+</div>
+<div id="outline-container-org919e48b" class="outline-4">
+<h4 id="org919e48b"><span class="section-number-4">4.1.1.</span> General Rules for Recursive Descent Parsing</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<p>
+Consider N = RE;
+corresponding parser method is
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span style="color: #ECBE7B;">void</span> <span style="color: #c678dd;">N</span>() {
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">match the RE pattern</span>
+}
+
+<span style="color: #5B6268;">// </span><span style="color: #5B6268;">To match the pattern t where t is terminal.</span>
+match(t);
+<span style="color: #5B6268;">// </span><span style="color: #5B6268;">To match N where N is non-terminal</span>
+N();
+<span style="color: #5B6268;">// </span><span style="color: #5B6268;">To match RE1RE2, just do one after another.</span>
+<span style="color: #5B6268;">// </span><span style="color: #5B6268;">To match RE1 | RE2, do if tree like:</span>
+<span style="color: #51afef;">if</span> (next token can start RE1) {
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">Match RE1</span>
+} <span style="color: #51afef;">else</span> <span style="color: #51afef;">if</span> (the next token can start RE2) {
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">Match RE2</span>
+} <span style="color: #5B6268;">// </span><span style="color: #98be65; font-weight: bold;">NOTE</span><span style="color: #5B6268;"> will miss tokens which can start both.</span>
+
+<span style="color: #5B6268;">// </span><span style="color: #5B6268;">To match RE*, do:</span>
+<span style="color: #51afef;">while</span> (next token can start RE) {
+    <span style="color: #5B6268;">// </span><span style="color: #5B6268;">Match the RE pattern</span>
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org4427712" class="outline-2">
+<h2 id="org4427712"><span class="section-number-2">5.</span> Compiler Generation Tools</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Automates the process of building compiler components.
+</p>
+
+<p>
+The input is a <b>specification</b> of what the component
+is supposed to do. I.e. a grammar.
+</p>
+
+<p>
+Examples: Lex &amp; Yacc &amp; JavaCC &amp; <b>ANTLR</b>
+</p>
+</div>
+<div id="outline-container-orged89218" class="outline-3">
+<h3 id="orged89218"><span class="section-number-3">5.1.</span> ANTLR</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+ANother Tool for Language Recognition
+</p>
+
+<p>
+ANTLR3 is <b>very</b> different to ANTLR4; we use <b>ANTLR4</b>
+</p>
+
+<p>
+Automatically generates a lexer &amp; recursive-descent parser
+Starts from a grammer and builds and walks the parse tree.
+Must express grammar in ANTLR notation (similar to EBNF)
+</p>
+
+<p>
+ANTLR is two parts; the tool used to generate the
+ &#x2026; lexer//parser. And the runtime, used to run them.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2024-02-09 Fri 11:45</p>
+</div>
+</body>
+</html>

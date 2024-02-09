@@ -1,0 +1,108 @@
+Syntactic Analysis
+====================
+
+Syntactic Analysis checks that src program is
+ ... *well formed*, and determines its *phrase structure*
+
+Syntactic Analysis can be broken into Lexer & Parser.
+
+Syntactic Analyser takes src prog, and outputs AST.
+Lexer passes *token stream* to the Parser.
+
+Applications of Syntactic Analysis:
+    Compilers, XML Parsing, Web Browsers (parse/render),
+    Natural Language Parsing
+
+* Tokens
+Textual symbols which influence prog phrase structure.
+i.e. literals, identifiers, operators, keywords, punctuation
+
+Each token has a *tag* and a *text*
+i.e. addition has tag "PLUS" and text '+'
+
+* Seperators
+Text which does not influence phrase structure.
+i.e. Spaces & Comments.
+In python, EOL is a token. Normally is a Seperator.
+
+* Lexer
+Breaks a SRC prog down into *tokens*
+At each step the lexer inspects the next char of src prog.
+When no src prog left, outputs EOF.
+
+** Example:
+If next char is:
+    Space -> Discard.
+    Start of Comment -> Scan rest and discard
+    Puntuation Mark -> Corresponding Token
+    Digit -> Scan remaining digits & output token.
+    Letter -> Scan remaining letters & output token.
+
+* Parser
+Determines the *phrase structure* of the SRC prog.
+(Converts a token stream into an AST.)
+
+There are two kinds of Parsing, Top-Down and Bottom-Up
+
+** Top Down // Recursive Descent.
+Common and simple, uses recursive procedures to process
+the token stream.
+Can be easily defined from a src lang grammar.
+
+Consists of a family of parsing methods N() for each
+non-terminal symbol of the src language grammar.
+And an auxilliary method 'match()'
+
+Match(t) checks if next token has a given tag;
+For each nonterminal N, method N() checks if next
+few tokens make up a phrase of class N.
+
+If Ye, consumes and returns AST representing the phrase.
+
+Can find these methods in CalcParser.java
+
+*** General Rules for Recursive Descent Parsing
+Consider N = RE;
+corresponding parser method is
+#+BEGIN_SRC java
+void N() {
+    // match the RE pattern
+}
+
+// To match the pattern t where t is terminal.
+match(t);
+// To match N where N is non-terminal
+N();
+// To match RE1RE2, just do one after another.
+// To match RE1 | RE2, do if tree like:
+if (next token can start RE1) {
+    // Match RE1
+} else if (the next token can start RE2) {
+    // Match RE2
+} // NOTE will miss tokens which can start both.
+
+// To match RE*, do:
+while (next token can start RE) {
+    // Match the RE pattern
+}
+#+END_SRC
+
+* Compiler Generation Tools
+Automates the process of building compiler components.
+
+The input is a *specification* of what the component
+is supposed to do. I.e. a grammar.
+
+Examples: Lex & Yacc & JavaCC & *ANTLR*
+
+** ANTLR
+ANother Tool for Language Recognition
+
+ANTLR3 is *very* different to ANTLR4; we use *ANTLR4*
+
+Automatically generates a lexer & recursive-descent parser
+Starts from a grammer and builds and walks the parse tree.
+Must express grammar in ANTLR notation (similar to EBNF)
+
+ANTLR is two parts; the tool used to generate the
+ ... lexer//parser. And the runtime, used to run them.

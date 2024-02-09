@@ -1,0 +1,89 @@
+Interpretation!
+See [[https://moodle.gla.ac.uk/pluginfile.php/6880076/mod_resource/content/5/04.Interpretation.pdf][Lec Slides]]
+
+================
+
+An S interpeter accepts lang S, and immediately executes.
+
+[[~/careers/bike.jpg]]
+
+
+* Interpreter Workflow
+Initialise State
+Repeated Fetch, Decode, Execute
+
+* Virtual Machine Interpretation
+** Virtual Machine Code consists of:
+Load/Store, Arithmetic/Logic, Conditional/Jump
+Call/Return, many more
+** Virtual Machine State consists of:
+Storage (code/data), Registers (CPU sim (StackPtr, PC))
+** Case Study: Simple Virtual Machine
+SVM is suitable for exec progs in simple imperative PL.
+
+SVM has *CODE STORE*; Fixed array of bytes (32,768) for /instructions/
+SVM has *DATA STORE*; Fixed array of words (ditto.) as stack for global
+                                                    and local /data/.
+*** SVM Main Registers
+Program Counter: Points to the next instruction to be executed.
+Stack Pointer: Points to top of stack.
+Frame Pointer: Points to base of topmost frame.
+Status: Running | Failed | Halted
+
+*** SVM Code Store
+Each Instruction occupies 1, 2 or 3 bytes.
+| Load | Store | Load | Load | ... |
+*** SVM Instruction Set
+| OpCode | Mnemonic | Behaviour              |
+|      0 | LOADG    | get w @ d              |
+|      1 | STOREG   | pop                    |
+|      4 | LOADC    | push v                 |
+|      6 | ADD      | w_1 + w_2              |
+|      7 | SUB      | w_1 - w_2              |
+|      8 | MUL      | w_1 * w_2              |
+|      9 | DIV      | w_1 / w_2              |
+|     10 | CMPEQ    | if ==, 1               |
+|     11 | CMPLT    | if <, 1                |
+|     14 | INV      | !w_1                   |
+|     16 | HALT     | status <- halted       |
+|     17 | JUMP c   | pc <- c                |
+|     18 | JUMPF c  | pop w; if w=0; pc <- c |
+|     19 | JUMPT c  | ditto. vice versa.     |
+
+*** Evaluation of Expressions
+Top of stack is used to eval.
+: Evaluation of 7+3:
+:
+:       | - |  | - |->| - |  | -  |
+:       | - |->| - |  | 3 |->| -  |
+: sp -> | - |  | 7 |  | 7 |  | 10 |
+:       |...|  |...|  |...|  |....|
+*** TODO See SVM Specification
+On moodle, closed as of writing. Will be opened.
+
+* Writing an Interpreter
+Interpreters are commonly written in C/Java
+In such interpreters, the VM state is represented by variables.
+Each instruction is executed by inspection and/or updating this state.
+
+Instructions are represented as enums with associated byte vals.
+The interpreter initialises the state; then fetches and evaluates the instructions.
+Generally, underlying the decode step is a simple switch case.
+** Example: Arithmetic
+:LOGBOOK:
+CLOCK: [2024-02-02 Fri 14:06]--[2024-02-02 Fri 14:33] =>  0:27
+:END:
+#+BEGIN_SRC java
+case ADD: {
+    int w2 = data[--sp];
+    int w1 = data[--sp];
+    data[sp++] = w1 + w2;
+    break;
+}
+case CMPLT: {
+    int w2 = data[--sp];
+    int w1 = data[--sp];
+    data[sp++] = (w1 < w2 ? 1 : 0);
+    break;
+}
+#+END_SRC
